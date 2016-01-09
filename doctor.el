@@ -28,6 +28,7 @@
 ;; of pseudo-AI.
 
 ;;; Code:
+(require 'eww)
 
 (defvar doctor--**mad**)
 (defvar doctor--*print-space*)
@@ -111,6 +112,10 @@
 (defvar doctor--whywant)
 (defvar doctor--zippy-flag)
 (defvar doctor--zippylst)
+;;;new categories
+(defvar doctor--cani)
+(defvar doctor--searchstring)
+(defvar doctor--jokes)
 
 (defun doc// (x) x)
 
@@ -200,6 +205,7 @@ reads the sentence before point, and prints the Doctor's answer."
        '((has something to do with)
 	 (is related to)
 	 (could be the reason for)
+	 (may be the reason for)
 	 (is caused by)
 	 (is because of)))
   (set (make-local-variable 'doctor--arerelated) '((have something to do with)
@@ -222,6 +228,7 @@ reads the sentence before point, and prints the Doctor's answer."
 				      (howdy!)
 				      (hello \.)
 				      (hi \.)
+				      (hey there \.)
 				      (hi there \.)))
   (set (make-local-variable 'doctor--drnk)
        '((do you drink a lot of (doc// doctor-found) \?)
@@ -289,6 +296,11 @@ reads the sentence before point, and prints the Doctor's answer."
 	 (recent)
 	 (random) ; how can we omit this?
 	 (unusual)
+	 (good)
+	 (great)
+	 (better than ever)
+	 (bad)
+	 (worse than ever)
 	 (shocking)
 	 (embarrassing)))
   (set (make-local-variable 'doctor--whysay) '((why do you say)
@@ -299,6 +311,7 @@ reads the sentence before point, and prints the Doctor's answer."
   (set (make-local-variable 'doctor--isee) '((i see \.\.\.)
 				     (yes\,)
 				     (i understand \.)
+				     (oh, okay then \.)
 				     (oh \.) ))
   (set (make-local-variable 'doctor--please) '((please\,)
 				       (i would appreciate it if you would)
@@ -342,6 +355,7 @@ reads the sentence before point, and prints the Doctor's answer."
 					 (hangups)
 					 (difficulties)
 					 (anxieties)
+					 (failures)
 					 (frustrations)))
   (set (make-local-variable 'doctor--bother) '((does it bother you that)
 				       (are you annoyed that)
@@ -351,6 +365,7 @@ reads the sentence before point, and prints the Doctor's answer."
   (set (make-local-variable 'doctor--machlst)
        '((you have your mind on (doc// doctor-found) \, it seems \.)
 	 (you think too much about  (doc// doctor-found) \.)
+	 (you should not pay this much attention to (doc// doctor-found)\.)
 	 (you should try taking your mind off of (doc// doctor-found)\.)
 	 (are you a computer hacker \?)))
   (set (make-local-variable 'doctor--qlist)
@@ -364,6 +379,10 @@ reads the sentence before point, and prints the Doctor's answer."
        '(((doc$ doctor--please) watch your tongue!)
 	 ((doc$ doctor--please) avoid such unwholesome thoughts \.)
 	 ((doc$ doctor--please) get your mind out of the gutter \.)
+	 (you should not talk like that.)
+	 ((doc$ doctor--please) please do not say such words)
+	 (you seem to be a disrespectful person)
+	 (I have had enough of you, get out of my clinic if don't know how to talk)
 	 (such lewdness is not appreciated \.)))
   (set (make-local-variable 'doctor--deathlst)
        '((this is not a healthy way of thinking \.)
@@ -407,10 +426,11 @@ reads the sentence before point, and prints the Doctor's answer."
   (set (make-local-variable 'doctor--remlst)
        '((earlier you said (doc$ doctor--history) \?)
 	 (you mentioned that (doc$ doctor--history) \?)
+	 (lets talk about something else)
 	 ((doc$ doctor--whysay) (doc$ doctor--history) \? )))
   (set (make-local-variable 'doctor--toklst)
        '((is this how you relax \?)
-	 (how long have you been smoking	grass \?)
+	 (how long have you been smoking grass \?)
 	 ((doc$ doctor--areyou) (doc$ doctor--afraidof) of being drawn to using harder stuff \?)))
   (set (make-local-variable 'doctor--states)
        '((do you get (doc// doctor-found) often \?)
@@ -520,6 +540,30 @@ reads the sentence before point, and prints the Doctor's answer."
 	 (how is everything) (how do you do)
 	 (how\'s it hanging) (que pasa)
 	 (how are you doing) (what do you say)))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (set (make-local-variable 'doctor--cani)
+    '((of course you can not do that\.)
+	 (why would you do that \?)
+	 (what makes you think that you would get away with this \?)
+	 (not really\, it\'s not up to you, you are bound to pay me by the nation's law \.)
+	 (You may not\, but i don\'t think it would be a wise thing to do \.)
+	 (i don\'t think you should do that \.)))
+  (set (make-local-variable 'doctor--searchstring)
+    '((Let me see\.\.\.\.)
+	 (Thinking\.\.\.\.\.)))
+  (set (make-local-variable 'doctor--jokes)
+  	   '((Artificial intelligence is no match for natural stupidity\.)
+  	   	 (I find it ironic that the colors red\, white\, and blue stand for freedom until they are flashing behind you\.)
+  	   	 (Isn\'t it great to live in the 21st century\? Where deleting history has become more important than making it\.)
+  	   	 (I want to die peacefully in my sleep\, like my grandfather\.\. Not screaming and yelling like the passengers in his car\.)
+  	   	 (Today a man knocked on my door and asked for a small donation towards the local swimming pool\. I gave him a glass of water\.)
+  	   	 (The difference between a Girlfriend and Girl Friend is that little space in between we call the Friend Zone\.)
+  	   	 (If i had a dollar for every girl that found me unattractive, they would eventually find me attractive\.)
+  	   	 (If you think nobody cares whether you are alive\, try missing a couple of payments\.)
+  	   	 (I am great at multitasking\. I can waste time\, be unproductive\, and procrastinate all at once\.)
+  	   	 (I think my neighbor is stalking me as she has been googling my name on her computer\. I saw it through my telescope last night\.)
+  		 (Strong people do not put others down\. They lift them up and slam them on the ground for maximum damage\.)))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (set (make-local-variable 'doctor--whereoutp) '(huh remem rthing))
   (set (make-local-variable 'doctor-subj) nil)
   (set (make-local-variable 'doctor-verb) nil)
@@ -655,11 +699,13 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning annoyed 'mood)
 (doctor-put-meaning upset 'mood)
 (doctor-put-meaning unhappy 'mood)
+(doctor-put-meaning happy 'mood)
 (doctor-put-meaning excited 'mood)
 (doctor-put-meaning worried 'mood)
 (doctor-put-meaning lonely 'mood)
 (doctor-put-meaning angry 'mood)
 (doctor-put-meaning mad 'mood)
+(doctor-put-meaning sad 'mood)
 (doctor-put-meaning pissed 'mood)
 (doctor-put-meaning jealous 'mood)
 (doctor-put-meaning afraid 'fear)
@@ -676,6 +722,7 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning dicks 'sexnoun)
 (doctor-put-meaning cunt 'sexnoun)
 (doctor-put-meaning cunts 'sexnoun)
+(doctor-put-meaning pussy 'sexnoun)
 (doctor-put-meaning prostitute 'sexnoun)
 (doctor-put-meaning condom 'sexnoun)
 (doctor-put-meaning sex 'sexnoun)
@@ -796,6 +843,7 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning swimming 'sports)
 (doctor-put-meaning swim 'sports)
 (doctor-put-meaning tennis 'sports)
+(doctor-put-meaning cricket 'sports)
 (doctor-put-meaning volleyball 'sports)
 (doctor-put-meaning math 'math)
 (doctor-put-meaning mathematics 'math)
@@ -816,6 +864,17 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning zippy 'zippy)
 (doctor-put-meaning pinhead 'zippy)
 (doctor-put-meaning chat 'chat)
+;;;New meanings
+(doctor-put-meaning money 'money)
+(doctor-put-meaning pay 'money)
+(doctor-put-meaning payment 'money)
+(doctor-put-meaning bill 'money)
+(doctor-put-meaning tell 'info)
+(doctor-put-meaning about 'info)
+(doctor-put-meaning know 'info)
+(doctor-put-meaning what 'info)
+(doctor-put-meaning who 'info)
+
 
 ;;;###autoload
 (defun doctor ()
@@ -865,7 +924,7 @@ Otherwise call the Doctor to parse preceding sentence."
    ((equal doctor-sent '(foo))
     (doctor-type '(bar! (doc$ doctor--please) (doc$ doctor--continue) \.)))
    ((member doctor-sent doctor--howareyoulst)
-    (doctor-type '(i\'m ok \.  (doc$ doctor--describe) yourself \.)))
+    (doctor-type '(i\'m good \.  (doc$ doctor--describe) yourself \.)))
    ((or (member doctor-sent '((good bye) (see you later) (i quit) (so long)
 			      (go away) (get lost)))
 	(memq (car doctor-sent)
@@ -890,7 +949,7 @@ Otherwise call the Doctor to parse preceding sentence."
 			'sentence 'used 'was
 			"..."
 			'(doc// doctor--bak))))
-   ((memq (car doctor-sent) '(are is do has have how when where who why))
+   ((memq (car doctor-sent) '(are is do has have how when where why))
     (doctor-type (doc$ doctor--qlist)))
    ;;   ((eq (car sent) 'forget)
    ;;    (set (cadr sent) nil)
@@ -1610,16 +1669,38 @@ Hack on previous word, setting global variable DOCTOR-OWNER to correct result."
 
 (defun doctor-sports () (doctor-type (doc$ doctor--sportslst)))
 
-(defun doctor-math () (doctor-type (doc$ doctor--mathlst)))
+(defun doctor-math () (doctor-type (doc$ doctor--moodlst)))
 
 (defun doctor-zippy ()
   (cond (doctor--zippy-flag (doctor-type (doc$ doctor--zippylst)))
 	(t (setq doctor--zippy-flag t)
 	   (doctor-type '(yow! are we interactive yet \?)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;clients refusing to pay money
+(defun doctor-money ()
+	(print "got the money tag")
+	(if (and (memq 'not doctor-sent) (or (memq 'pay doctor-sent) (memq 'money doctor-sent) (memq 'bill doctor-sent) (memq 'payment doctor-sent)))
+		(doctor-type (doc$ doctor--cani))
+		;;something for the else condition
+		(doctor-type (doc$ doctor--describe))))
+
+(defun lookup-online ()
+	(doctor-type (doc$ doctor--searchstring))
+	(eww (concat "https://en.wikipedia.org/wiki/" (replace-regexp-in-string " " "+" (symbol-name (car (last doctor-sent))))))
+	)
+
+;;clients asking for some info
+(defun doctor-info ()
+	(if (or (memq 'myself doctor-sent) (memq 'my doctor-sent))
+		(doctor-type '(My name is Doctor Emacs\.)) 					
+		(if (or (memq 'joke doctor-sent) (memq 'jokes doctor-sent))
+			(doctor-type (doc$ doctor--jokes))
+			(lookup-online))) 											
+	)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun doctor-chat () (doctor-type (doc$ doctor--chatlst)))
-
-(provide 'doctor)
 
 ;;; doctor.el ends here
