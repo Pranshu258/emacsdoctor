@@ -116,6 +116,7 @@
 (defvar doctor--cani)
 (defvar doctor--searchstring)
 (defvar doctor--jokes)
+(defvar doctor--thanklst)
 
 (defun doc// (x) x)
 
@@ -563,6 +564,9 @@ reads the sentence before point, and prints the Doctor's answer."
   	   	 (I am great at multitasking\. I can waste time\, be unproductive\, and procrastinate all at once\.)
   	   	 (I think my neighbor is stalking me as she has been googling my name on her computer\. I saw it through my telescope last night\.)
   		 (Strong people do not put others down\. They lift them up and slam them on the ground for maximum damage\.)))
+  (set (make-local-variable 'doctor--thanklst)
+    '((You are welcome)
+	 (You are always welcome)))  
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (set (make-local-variable 'doctor--whereoutp) '(huh remem rthing))
   (set (make-local-variable 'doctor-subj) nil)
@@ -874,7 +878,8 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning know 'info)
 (doctor-put-meaning what 'info)
 (doctor-put-meaning who 'info)
-
+(doctor-put-meaning thanks 'thank)
+(doctor-put-meaning thank 'thank)
 
 ;;;###autoload
 (defun doctor ()
@@ -1681,10 +1686,10 @@ Hack on previous word, setting global variable DOCTOR-OWNER to correct result."
 ;;clients refusing to pay money
 (defun doctor-money ()
 	(print "got the money tag")
-	(if (and (memq 'not doctor-sent) (or (memq 'pay doctor-sent) (memq 'money doctor-sent) (memq 'bill doctor-sent) (memq 'payment doctor-sent)))
+	(if (memq 'not doctor-sent)
 		(doctor-type (doc$ doctor--cani))
 		;;something for the else condition
-		(doctor-type (doc$ doctor--describe))))
+		(doctor-type (doc$ doctor--shortlst))))
 
 (defun lookup-online ()
 	(doctor-type (doc$ doctor--searchstring))
@@ -1699,6 +1704,11 @@ Hack on previous word, setting global variable DOCTOR-OWNER to correct result."
 			(doctor-type (doc$ doctor--jokes))
 			(lookup-online))) 											
 	)
+
+(defun doctor-thank ()
+	(doctor-type (doc$ doctor--thanklst))
+	)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun doctor-chat () (doctor-type (doc$ doctor--chatlst)))
