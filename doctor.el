@@ -880,6 +880,7 @@ reads the sentence before point, and prints the Doctor's answer."
 (doctor-put-meaning who 'info)
 (doctor-put-meaning thanks 'thank)
 (doctor-put-meaning thank 'thank)
+
 
 ;;;###autoload
 (defun doctor ()
